@@ -1,0 +1,46 @@
+services:
+  # ── FastAPI backend ────────────────────────────────────────────────────────
+  - type: web
+    name: url-shortener-api
+    runtime: python
+    region: oregon
+    plan: starter           # upgrade to standard for prod; adds horizontal scaling
+    buildCommand: |
+      pip install -r requirements.txt
+      alembic upgrade head
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT --workers 2 --loop uvloop
+    healthCheckPath: /api/v1/health
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: DATABASE_URL
+        fromDatabase:
+          name: url-shortener-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          name: url-shortener-redis
+          type: redis
+          property: connectionString
+      - key: BASE_DOMAIN
+        value: https://your-api.onrender.com
+      - key: ENVIRONMENT
+        value: production
+      - key: SECRET_KEY
+        generateValue: true       # Render auto-generates
+      - key: ALLOWED_ORIGINS
+        value: https://your-app.vercel.app
+      - key: MACHINE_ID
+        value: "1"                # Increment per replica for Snowflake uniqueness
+
+  # ── PostgreSQL ─────────────────────────────────────────────────────────────
+databases:
+  - name: url-shortener-db
+    databaseName: urlshortener
+    plan: starter
+    region: oregon
+
+  # ── Redis ──────────────────────────────────────────────────────────────────
+  # Add a Redis instance via Render dashboard (Redis type service)
+  # Name it: url-shortener-redis
