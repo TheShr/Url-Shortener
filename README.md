@@ -2,7 +2,7 @@
 
 A production-grade URL shortening service engineered for high throughput, horizontal scalability, and fault tolerance. Built with a fully async backend, multi-layer caching, and a real-time analytics pipeline — designed to handle over 10,000 requests per second with sub-100ms redirect latency at the p99.
 
-Live demo: [url-shortener-frontend-hncn5herv.vercel.app](https://url-shortener-frontend-hncn5herv.vercel.app/)
+Live demo: [url-shortener-frontend-hncn5herv.vercel.app](https://tq-six.vercel.app/)
 
 ---
 
